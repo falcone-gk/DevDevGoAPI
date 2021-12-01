@@ -14,18 +14,3 @@ class ProfileRetrieveAPIView(RetrieveAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     lookup_field = 'username'
-
-    def retrieve(self, request, username, *args, **kwargs):
-        # Try to retrieve the requested profile and throw an exception if the
-        # profile could not be found.
-        try:
-            profile = self.queryset.get(user__username=username)
-        except Profile.DoesNotExist:
-            raise NotFound('A profile with this username does not exist.')
-
-        serializer = self.serializer_class(profile, context={
-            'request': request
-        })
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
