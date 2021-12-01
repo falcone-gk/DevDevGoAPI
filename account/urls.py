@@ -8,8 +8,4 @@ urlpatterns = [
             'profiles/<slug:username>',
             views.ProfileRetrieveAPIView.as_view()
             ),
-        path(
-            'profiles/<slug:username>/follow',
-            views.ProfileFollowAPIView.as_view()
-            ),
         ]

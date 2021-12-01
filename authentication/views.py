@@ -1,33 +1,33 @@
 from django.contrib.auth.models import User
 
 from rest_framework import serializers, status
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import UserSerializer, LoginSerializer
+from .serializers import UserSerializer
 # Create your views here.
 
 class RegistrationAPIView(CreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
 
+class LoginAPIView(ObtainAuthToken):
 
-class LoginAPIView(APIView):
-    permission_classes = (AllowAny,)
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-
-        # Notice here that we do not call `serializer.save()` like we did for
-        # the registration endpoint. This is because we don't actually have
-        # anything to save. Instead, the `validate` method on our serializer
-        # handles everything we need.
-        serializer = self.serializer_class(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
         serializer.is_valid(raise_exception=True)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.username,
+            'email': user.email
+        })
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     permissions = (IsAuthenticated,)

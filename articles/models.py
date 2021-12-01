@@ -1,16 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.text import slugify
+from account.models import Profile
 
 # Create your models here.
-class Tag(models.Model):
-    tag = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
-
-    def __str__(self):
-        return self.tag
-
-
 class Article(models.Model):
     slug = models.SlugField(max_length=255, unique=True)
     title = models.CharField(max_length=255)
@@ -25,13 +18,13 @@ class Article(models.Model):
     # key (or one-to-many) relationship. In this case, one `Profile` can have
     # many `Article`s.
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='articles'
-    )
-
-    tags = models.ManyToManyField(
-        Tag, related_name='articles'
+        Profile, on_delete=models.CASCADE
     )
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super().save(*args, **kwargs)
 

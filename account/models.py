@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -38,19 +39,16 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-    def follow(self, profile):
-        """Follow `profile` if we're not already following `profile`."""
-        self.follows.add(profile)
+    def save(self, *args, **kwargs):
+        self.image = 'https://static.productionready.io/images/smiley-cyrus.jpg'
+        return super().save(*args, **kwargs)
 
-    def unfollow(self, profile):
-        """Unfollow `profile` if we're already following `profile`."""
-        self.follows.remove(profile)
+    def get_data(self):
+        data = {
+                'username': self.user.username,
+                'bio': self.bio,
+                'image': self.image
+                }
 
-    def is_following(self, profile):
-        """Returns True if we're following `profile`; False otherwise."""
-        return self.follows.filter(pk=profile.pk).exists()
-
-    def is_followed_by(self, profile):
-        """Returns True if `profile` is following us; False otherwise."""
-        return self.followed_by.filter(pk=profile.pk).exists()
+        return data
 

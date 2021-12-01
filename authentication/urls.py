@@ -19,5 +19,5 @@ urlpatterns = [
             'users/login',
             views.LoginAPIView.as_view(),
             name='login_user'
-            )
+            ),
         ]
