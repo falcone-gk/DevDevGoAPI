@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from .models import Article
-from account.models import Profile
 
-class ArticleSerializer(serializers.ModelSerializer):
+class ListArticleSerializer(serializers.ModelSerializer):
+    """Serializer to show when a get request is send to API."""
 
     author = serializers.ReadOnlyField(
             source="author.get_data"
@@ -10,6 +10,12 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = "__all__"
         read_only_fields = ('slug', )
+        exclude = ('id',)
 
+class ArticleSerializer(serializers.ModelSerializer):
+    """Serializer used to post and put request."""
+
+    class Meta:
+        model = Article
+        fields = ('title', 'description', 'body', 'author')
