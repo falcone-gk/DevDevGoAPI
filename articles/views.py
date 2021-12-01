@@ -1,26 +1,30 @@
 from django.contrib.auth.models import User
 
-from rest_framework import serializers, status, viewsets
-#from rest_framework.generics import RetrieveAPIView
+from rest_framework import status, viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.authtoken.models import Token
 
-from .serializers import ArticleSerializer
+from .serializers import ListArticleSerializer, ArticleSerializer
 from .models import Article
 
 
 class ArticlesViewSet(viewsets.ModelViewSet):
-    serializer_class = ArticleSerializer
     queryset = Article.objects.all()
     lookup_field = "slug"
+
+    def get_serializer_class(self):
+        """Using differents serializers depending on request method."""
+
+        if self.request.method == 'GET':
+            return ListArticleSerializer
+        return ArticleSerializer
 
     def list(self, request, *args, **kwargs):
 
         queryset = self.get_queryset()
-        serializer = ArticleSerializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, many=True)
         data = {
                 'articles': serializer.data,
                 'articlesCount': len(serializer.data)
