@@ -45,10 +45,10 @@ class Profile(models.Model):
 
     def get_data(self):
         data = {
-                'username': self.user.username,
-                'bio': self.bio,
-                'image': self.image
-                }
+            'username': self.user.username,
+            'bio': self.bio,
+            'image': self.image
+            }
 
         return data
 
