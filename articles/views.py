@@ -14,6 +14,10 @@ class ArticlesViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
     lookup_field = "slug"
 
+    def get_queryset(self):
+        queryset = Article.objects.all().order_by("-created_at")
+        return queryset
+
     def get_serializer_class(self):
         """Using differents serializers depending on request method."""
 
@@ -26,16 +30,24 @@ class ArticlesViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         data = {
-                'articles': serializer.data,
-                'articlesCount': len(serializer.data)
-                }
+            'articles': serializer.data,
+            'articlesCount': len(serializer.data)
+            }
         return Response(data)
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
 
-        token = self.request.META['Authorization'].split(' ')[1]
-        user = Token.objects.get(key=token).user
-        serializer.save(author=user)
+        serializer = self.get_serializer(data=request.data)
+
+        # Getting user id from token in headers.
+        token = request.META['HTTP_AUTHORIZATION'].split(' ')[1]
+        user_id = Token.objects.get(key=token).user.profile.pk
+        request.data['author'] = user_id
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
     def get_permissions(self):
         """
