@@ -26,6 +26,10 @@ class ArticlesViewSet(viewsets.ModelViewSet):
         return ArticleSerializer
 
     def list(self, request, *args, **kwargs):
+        """
+        Changing json sent because frontend needs articles and
+        anrticlesCount fields
+        """
 
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
