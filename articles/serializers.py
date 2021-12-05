@@ -19,4 +19,4 @@ class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ('title', 'description', 'body', 'author', 'slug')
-        read_only_fields = ('slug', 'author')
+        read_only_fields = ('slug',)

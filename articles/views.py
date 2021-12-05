@@ -53,6 +53,22 @@ class ArticlesViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
 
+
+    def update(self, request, *args, **kwargs):
+
+        article = self.get_object()
+
+        # Getting author id
+        author_id = article.author.pk
+        request.data['author'] = author_id
+
+        serializer = self.get_serializer(article, data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.error, status=status.HTTP_400_BAD_REQUEST)
+
     def get_permissions(self):
         """
         Separating permissions when is a get requets with the others.
