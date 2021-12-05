@@ -25,7 +25,7 @@ class LoginAPIView(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({
             'token': token.key,
-            'user_id': user.username,
+            'username': user.username,
             'email': user.email
         })
 
