@@ -1,3 +1,4 @@
+import django_heroku
 import os
 from .base import *
 
@@ -20,3 +21,6 @@ DATABASES = {
         'PORT':  '5432'
     }
 }
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
