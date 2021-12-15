@@ -3,7 +3,14 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
+from .models import PreRegister
 from account.models import Profile
+
+class PreRegisterSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PreRegister
+        fields = ('email',)
 
 class UserSerializer(serializers.ModelSerializer):
 
