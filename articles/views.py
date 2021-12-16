@@ -25,20 +25,6 @@ class ArticlesViewSet(viewsets.ModelViewSet):
             return ListArticleSerializer
         return ArticleSerializer
 
-    def list(self, request, *args, **kwargs):
-        """
-        Changing json sent because frontend needs articles and
-        anrticlesCount fields
-        """
-
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        data = {
-            'articles': serializer.data,
-            'articlesCount': len(serializer.data)
-            }
-        return Response(data)
-
     def create(self, request, *args, **kwargs):
 
         serializer = self.get_serializer(data=request.data)

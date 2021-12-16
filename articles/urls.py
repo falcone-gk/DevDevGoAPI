@@ -5,7 +5,7 @@ from . import views
 
 app_name = "articles"
 
-router = SimpleRouter(trailing_slash=False)
+router = SimpleRouter()
 router.register('articles', views.ArticlesViewSet, basename='article')
 
 urlpatterns = []
