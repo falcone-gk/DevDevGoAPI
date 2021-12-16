@@ -11,6 +11,11 @@ urlpatterns = [
             name='retrieve_update_user'
             ),
         path(
+            'users/preregister',
+            views.PreRegisterAPIView.as_view(),
+            name='preregister_user'
+            ),
+        path(
             'users/',
             views.RegistrationAPIView.as_view(),
             name='register_user'
